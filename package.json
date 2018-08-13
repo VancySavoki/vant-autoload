@@ -1,0 +1,25 @@
+{
+  "name": "vant-autoload",
+  "version": "1.0.0",
+  "description": "general autoload biz components based on vant",
+  "main": "AutoloadList.js",
+  "scripts": {
+    "test": "echo 'unsupported'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vancysavoki/vant-autoload.git"
+  },
+  "keywords": [
+    "autoload",
+    "list",
+    "vant",
+    "mobile"
+  ],
+  "author": "trivia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vancysavoki/vant-autoload/issues"
+  },
+  "homepage": "https://github.com/vancysavoki/vant-autoload#readme"
+}
