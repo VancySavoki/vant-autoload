@@ -1,4 +1,4 @@
-## vant-autoloadList
+## vant-autoload
 [英文](README.md)
 
 基于[@youzan/vant](https://github.com/youzan/vant)的自动加载通用业务组件

@@ -1,4 +1,4 @@
-## vant-autoloadList
+## vant-autoload
 [中文](README-ZH-CN.md)
 
 general autoload biz components based on [@youzan/vant](https://github.com/youzan/vant)
