@@ -1,20 +1,55 @@
-import { Loading, Cell, CellSwipe, List } from 'vant';
+import { Cell, CellSwipe, List } from 'vant';
+import { ContentLoader } from 'vue-content-loader';
+var Loader = {
+  name: 'loader',
+  functional: true,
+  render: function render(h, _ref) {
+    var data = _ref.data;
+    return h(ContentLoader, data, [h('rect', {
+      attrs: {
+        x: '107',
+        y: '0',
+        rx: '4',
+        ry: '4',
+        width: '60%',
+        height: '1em'
+      }
+    }), h('rect', {
+      attrs: {
+        x: '107',
+        y: '31',
+        rx: '3',
+        ry: '3',
+        width: '50%',
+        height: '1em'
+      }
+    }), h('rect', {
+      attrs: {
+        x: '7.5',
+        y: '0',
+        rx: '0',
+        ry: '0',
+        width: '90',
+        height: '120'
+      }
+    })]);
+  }
+};
 const props = {
   to: {
-    type: [Object, String, Boolean],
-    required: true
+    type: Boolean,
+    default: false
   },
-  view: {
-    type: [Object, Function],
-    required: true
+  clickable: {
+    type: Boolean,
+    default: false
   },
   value: {
     type: [Object, Array],
     required: true
   },
-  clickable: {
-    type: Boolean,
-    default: false
+  view: {
+    type: [Object, Function]
   },
   canSwipe: {
     type: Boolean,
@@ -38,26 +73,35 @@ const Delegate = {
   props,
   render(h, context) {
     const ModelView = context.props.view;
-    let cell;
+    let cellProp;
     if (context.props.to) {
-      cell = h(Cell, {
+      cellProp = {
         props: {
           clickable: context.props.clickable,
           to: context.props.value.to
         }
-      }, [h(ModelView, {
-        props: context.props
-      })]);
+      };
     } else {
-      cell = h(Cell, [h(ModelView, {
-        props: context.props
-      })]);
+      cellProp = {
+        props: {
+          clickable: context.props.clickable
+        }
+      };
     }
+    const contentSlotIndex = 0;
+    let cellContent;
+    if (context.children && context.children.length > contentSlotIndex && context.children[contentSlotIndex].data.slot === 'content') {
+      cellContent = [h(VNodeFactory(context.children[contentSlotIndex]), { props: context.props })];
+    } else {
+      cellContent = [h(ModelView, { props: context.props, on: context.data.on })];
+    }
+    const cell = h(Cell, cellProp, cellContent);
     if (context.props.canSwipe) {
       const RightView = context.props.swipeRightView;
       let right;
-      if (context.children && context.children.length > 0 && context.children[0].data.slot === 'right') {
-        right = h(VNodeFactory(context.children[0]), { slot: 'right' });
+      const slotIndex = 1;
+      if (context.children && context.children.length > slotIndex && context.children[slotIndex].data.slot === 'right') {
+        right = h(VNodeFactory(context.children[slotIndex]), { slot: 'right' });
       } else {
         right = h(RightView, {
           props: {
@@ -93,8 +137,9 @@ const Delegate = {
  * @event swipe-X dispatch any event from the right slot, NOT SECUIRTY, cause the $listeners is not filtered
  * @slot['right'] replace @swipeRightView, use slot-scope expose card value, a more simple usage
  * @returns {VueComponent} VueComponent
- * @example (<autoload :to="true" :clickable="true" :view="objView" :finished="false" :loading="false" :limit="10" :value="value" :canSwipe="true" v-on:load="load"><right-view slot="right" slot-scope="content" v-bind="content" v-on:swipe-click="load"></autoload>)
- * @example (<autoload :to="true" :clickable="true" :view="objView" :finished="false" :loading="false" :limit="10" :value="value" :canSwipe="true" :swipeRightView="swipeRightView" v-on:load="load" v-on:swipe-click="load" />)
+ * @example (<autoload :to='true' :clickable='true' :view='objView' :finished='false' :loading='false' :limit='10' :value='value' :canSwipe='true' v-on:load='load'><right-view slot='right' slot-scope='content' v-bind='content' v-on:swipe-click='load'></autoload>)
+ * @example (<autoload :to='true' :clickable='true' :view='objView' :finished='false' :loading='false' :limit='10' :value='value' :canSwipe='true' :swipeRightView='swipeRightView' v-on:load='load' v-on:swipe-click='load' />)
+ * @todo use mem cache, minimize the render time consuming
 */
 export default {
   name: 'autoload',
@@ -114,11 +159,16 @@ export default {
     }, {}); */
     const $props = this.$props;
     const slots = this.value.map((val, index) => {
-      let content = [];
+      const content = [];
+      if (this.$scopedSlots.content) {
+        content.push(
+          h(FunctionalFactory(this.$scopedSlots.content({ value: val })), { slot: 'content' })
+        );
+      }
       if (this.$scopedSlots.right) {
-        content = [
+        content.push(
           h(FunctionalFactory(this.$scopedSlots.right({ value: val, index })), { slot: 'right' })
-        ];
+        );
       }
       return h(Delegate, {
         props: { ...$props, value: val, index },
@@ -143,12 +193,8 @@ export default {
       },
       slots
     );
-    const template = h(Loading, {
-      style: {
-        margin: '15px auto'
-      }
-    });
-    const child = this.loading ? [vanlist, template] : [vanlist];
+    const template = Array.apply(null, { length: this.limit }).map(() => h(Loader));
+    const child = this.loading ? [vanlist, ...template] : [vanlist];
     const root = h('div', child);
     return root;
   },
