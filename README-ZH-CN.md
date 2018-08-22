@@ -1,8 +1,13 @@
 ## vant-autoload
 [英文](README.md)
 
-基于[@youzan/vant](https://github.com/youzan/vant)的自动加载通用业务组件
-
+基于[@youzan/vant](https://github.com/youzan/vant)的自动加载通用业务组件  
+#### 更新日志
+##### 1.1.0
+1. 增加content插槽作为主视图传入
+2. 使用vueg对加载时的loading动画进行骨架渲染
+##### 1.0.0
+1. vant-autoload发布
 ### 安装
 ``` javascript
 import Autoload from 'vant-autoload';
@@ -171,6 +176,7 @@ export default {
 
 | 名称 | 描述 | 类型 | 默认值 | 是否必须 |
 |-----------|-----------|-----------|-------------|------|
+| content[实验性质] | * 可以使用具名slot[name=content] 作为主视图，更加vue style * | `VueComponent` |  | `false` |
 | right | 侧滑时，渲染的组件，内部会将被侧滑的item和index作为属性传递给该组件 | `VueComponent` |  | `false` |
 ### 组件原生事件
 

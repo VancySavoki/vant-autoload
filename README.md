@@ -2,7 +2,12 @@
 [中文](README-ZH-CN.md)
 
 general autoload biz components based on [@youzan/vant](https://github.com/youzan/vant)
-
+#### Update
+##### 1.1.0
+1. add content slot as main view
+2. use vueg as skeleton render when loading
+##### 1.0.0
+1. vant-autoload release
 ### Install
 ``` javascript
 import Autoload from 'vant-autoload';
@@ -168,6 +173,7 @@ export default {
 
 | Attribute | Description | Type | Default | Required |
 |-----------|-----------|-----------|-------------|------|
+| content[Experimental] | * now you can use content slot as `view` more like vue style, rather than react style * | `VueComponent` |  | `false` |
 | right | When swiping, the swiped item and index will be as the prop pass to the components | `VueComponent` |  | `false` |
 ### Origin Event
 
